@@ -51,8 +51,7 @@ def readVars(verboose=False):
             # Temperaturwerte auslesen und konvertieren
             stringvalue = filecontent.split("\n")[1].split(" ")[9]
             sensorwert = float(stringvalue[2:]) / 1000
-            temperatur = '%6.2f' % sensorwert #Sensor- bzw. Temperaturwert auf 2 Dezimalstellen formatiert
-            data.append(temperatur)
+            data.append(sensorwert)
             x = x + 1
     except:
         # Fehler bei Auslesung der Sensoren
@@ -65,7 +64,7 @@ def postVars(data):
     client = InfluxDB('http://' + host + ':' + str(port))
     for i in range(len(data)):
         # Post data to db
-        client.write(database, 'Temps', fields={'Sensor{}'.format(i): int(data[i])})
+        client.write(database, 'Temps', fields={'Sensor{}'.format(i): data[i]})
 
 def processVars(data, action="DB", verboose=False, formatingTXT=None):
     if action.lower() == "DB".lower():
