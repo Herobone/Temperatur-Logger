@@ -127,7 +127,7 @@ def main():
 
     # if the type is single it only processes once
     if (args.type == "single"):
-        data = readVars(verboose=args.verboose)
+        data = readVars(verboose=args.verboose, dummy=args.dummy)
         processVars(data, action=args.action,
                     verboose=args.verboose)
 
