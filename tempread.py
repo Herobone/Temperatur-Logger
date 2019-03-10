@@ -65,7 +65,7 @@ def postVars(data):
     client = InfluxDB('http://' + host + ':' + str(port))
     for i in range(len(data)):
         # Post data to db
-        client.write(database, 'Temps', fields={'Sensor{}'.format(i): data[i]})
+        client.write(database, 'Temps', fields={'Sensor{}'.format(i): int(data[i])})
 
 def processVars(data, action="DB", verboose=False, formatingTXT=None):
     if action.lower() == "DB".lower():
