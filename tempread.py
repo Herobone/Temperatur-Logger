@@ -58,8 +58,6 @@ def readVars(verboose=False):
         # Fehler bei Auslesung der Sensoren
         print("Die Auslesung der DS1820 Sensoren war nicht möglich.")
         sys.exit(-1)
-    for r in range(7):
-        data.append(random.randrange(0, 50))
     return data
 
 def postVars(data):
