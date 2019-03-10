@@ -38,25 +38,30 @@ def ds1820einlesen():
         print("Der Verzeichnisinhalt konnte nicht ausgelesen werden.")
         sys.exit(-1)
 
-def readVars(verboose=False):
+def readVars(verboose=False, dummy=None):
     data = []
-    x = 0
-    try:
-        # 1-wire Slave Dateien gem. der ermittelten Anzahl auslesen 
-        while x < tempSensorAnzahl:
-            dateiName = "/sys/bus/w1/devices/" + tempSensorBezeichnung[x] + "/w1_slave"
-            file = open(dateiName)
-            filecontent = file.read()
-            file.close()
-            # Temperaturwerte auslesen und konvertieren
-            stringvalue = filecontent.split("\n")[1].split(" ")[9]
-            sensorwert = float(stringvalue[2:]) / 1000
-            data.append(sensorwert)
-            x = x + 1
-    except:
-        # Fehler bei Auslesung der Sensoren
-        print("Die Auslesung der DS1820 Sensoren war nicht möglich.")
-        sys.exit(-1)
+    if dummy is 0:
+        x = 0
+        try:
+            # 1-wire Slave Dateien gem. der ermittelten Anzahl auslesen 
+            while x < tempSensorAnzahl:
+                dateiName = "/sys/bus/w1/devices/" + tempSensorBezeichnung[x] + "/w1_slave"
+                file = open(dateiName)
+                filecontent = file.read()
+                file.close()
+                # Temperaturwerte auslesen und konvertieren
+                stringvalue = filecontent.split("\n")[1].split(" ")[9]
+                sensorwert = float(stringvalue[2:]) / 1000
+                data.append(sensorwert)
+                x = x + 1
+        except:
+            # Fehler bei Auslesung der Sensoren
+            print("Die Auslesung der DS1820 Sensoren war nicht möglich.")
+            sys.exit(-1)
+    else:
+        for d in range(dummy):
+            data.append(float(random.randrange(0, 50)))
+    
     return data
 
 def postVars(data):
@@ -83,6 +88,8 @@ def main():
                     help="Set the type of execution (multi/single)")
     ap.add_argument("-a", "--action", required=False, default="DB",
                     help="Set the action it should do (DB)")
+    ap.add_argument("-d", "--dummy", required=False, type=int, default=0,
+        help="Random dummy values")
     ap.add_argument("-q", "--quiet", required=False,
                     help="No output", action='store_true')
     ap.add_argument("-v", "--verboose", required=False,
@@ -92,7 +99,10 @@ def main():
     if args.quiet:
         args.verboose = False
 
-    ds1820einlesen()
+    if args.dummy is 0:
+        ds1820einlesen()
+    else:
+        tempSensorAnzahl = args.dummy
 
     # Print Debug messages if program is not quiet
     if not args.quiet:
@@ -110,7 +120,7 @@ def main():
 
     # if the type is multi it will continue processing
     while (args.type == "multi"):
-        data = readVars(verboose=args.verboose)
+        data = readVars(verboose=args.verboose, dummy=args.dummy)
         processVars(data, action=args.action,
                     verboose=args.verboose)
         time.sleep(waitTime)
