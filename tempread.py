@@ -74,7 +74,7 @@ def processVars(data, action="DB", verboose=False, formatingTXT=None):
         postVars(data)
 
     if (verboose):
-        for i in len(data):
+        for i in range(len(data)):
             # Post data to db
             print('Sersor{}={}'.format(i, data[i]))
 
@@ -95,6 +95,8 @@ def main():
     if args.quiet:
         args.verboose = False
 
+    ds1820einlesen()
+
     # Print Debug messages if program is not quiet
     if not args.quiet:
         print("Process started!")
@@ -107,7 +109,7 @@ def main():
         if(args.type == "multi"):
             print("Interval: {} seconds".format(waitTime))
 
-    ds1820einlesen()
+        print("Sensors detected: ", tempSensorAnzahl)
 
     # if the type is multi it will continue processing
     while (args.type == "multi"):
